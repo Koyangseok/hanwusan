@@ -216,18 +216,17 @@ def send_ntfy_alert(ntfy_channel, available_dates):
     except Exception:
         pass
 
-def render_results(container, found_dates):
-    with container:
-        st.subheader(f"✨ 찾은 빈방 ({len(found_dates)}개)")
-        if found_dates:
-            cols = st.columns(3)
-            for idx, (k, info) in enumerate(found_dates.items()):
-                with cols[idx % 3]:
-                    with st.container(border=True):
-                        st.markdown(f"### 📅 {info['checkin']} ~ {info['checkout']}")
-                        st.markdown(f"**🏠 객실:** {info['room_name']}")
-                        st.markdown(f"**💰 가격:** {info['min_price']} ~ {info['max_price']}원")
-                        st.link_button("👉 바로 예약하러 가기", info['url'], use_container_width=True)
+def render_results(found_dates):
+    st.subheader(f"✨ 찾은 빈방 ({len(found_dates)}개)")
+    if found_dates:
+        cols = st.columns(3)
+        for idx, (k, info) in enumerate(found_dates.items()):
+            with cols[idx % 3]:
+                with st.container(border=True):
+                    st.markdown(f"### 📅 {info['checkin']} ~ {info['checkout']}")
+                    st.markdown(f"**🏠 객실:** {info['room_name']}")
+                    st.markdown(f"**💰 가격:** {info['min_price']} ~ {info['max_price']}원")
+                    st.link_button("👉 바로 예약하러 가기", info['url'], use_container_width=True)
 
 # --- UI 레이아웃 ---
 st.title("🏕️ 한우산 별천지 숙박 빈방 찾기")
@@ -338,14 +337,12 @@ if st.session_state.monitoring:
             if ntfy_channel:
                 send_ntfy_alert(ntfy_channel, newly_found_this_batch)
 
-        # 단 하나의 플레이스홀더 영역만 갱신
-        results_box.empty()
         with results_box.container():
-            render_results(st, st.session_state.found_dates)
+            render_results(st.session_state.found_dates)
 
         status_box.text(f"⏳ {poll_interval}초 후 다음 검사를 진행합니다...")
         time.sleep(poll_interval)
 
 else:
     with results_box.container():
-        render_results(st, st.session_state.found_dates)
+        render_results(st.session_state.found_dates)
