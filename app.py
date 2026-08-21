@@ -240,7 +240,7 @@ with st.sidebar:
     
     nights = st.number_input("숙박 박수 (N박)", min_value=1, value=1)
     guests = st.number_input("인원 수", min_value=1, value=2)
-    poll_interval = st.number_input("폴링 간격 (초)", min_value=10, value=30)
+    poll_interval = 20  # 폴링 간격 고정 (설정창에서 제거)
     
     ntfy_channel = st.text_input("ntfy 알림 채널명 (선택)", value="", help="https://ntfy.sh/채널명 형식에서 채널명 입력")
 
