@@ -12,12 +12,12 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # 페이지 기본 설정
 st.set_page_config(
-    page_title="별천지 숙박 빈방 찾기",
-    page_icon="🏨",
+    page_title="한우산 별천지 숙박 빈방 찾기",
+    page_icon="🏕️",
     layout="wide"
 )
 
-# 기본 고정 값
+# 고정 설정 값
 PLACE_ID = "4379536846"
 DEFAULT_COOKIE = "NAC=nyNtBExYI7RX; NNB=K2A64S2MWYDGU; bnb_tooltip_shown_finance_v1=true; _fbp=fb.1.1780312272093.69699559161814351; ab.storage.userId.7d7bb94a-f465-48e5-bec1-35db97daf128=g%3A3fvJh%7Ce%3Aundefined%7Cc%3A1780395206595%7Cl%3A1780395206597; ab.storage.deviceId.7d7bb94a-f465-48e5-bec1-35db97daf128=g%3A796f7ab8-f621-227e-6436-a010f7f8af13%7Ce%3Aundefined%7Cc%3A1780395206599%7Cl%3A1780395206599; ab.storage.sessionId.7d7bb94a-f465-48e5-bec1-35db97daf128=g%3A1dbcc849-956e-725a-6d14-96ea41d8b513%7Ce%3A1780397194261%7Cc%3A1780395206596%7Cl%3A1780395394261; ba.uuid=a5935baf-528e-4e05-938c-34cf0682a071; tooltipDisplayed=true; ASID=77c7de840000019ecb91d4a30000001d; _ga=GA1.2.1425938226.1783603618; NV_WETR_LAST_ACCESS_RGN_M=\"MDQxMTMzNjA=\"; NV_WETR_LOCATION_RGN_M=\"MDQxMTMzNjA=\"; nid_inf=-1250604521; NID_AUT=XGg/xpiQz3cd/y2zgV4vWFJ3dChoy0YiL005zKTVVphWzWtQPW4J5bT6mcyS5isc; _gid=GA1.2.1287303399.1787223173; _ga_6Z6DP60WFK=GS2.2.s1787223173$o1$g1$t1787223189$j44$l0$h0; SRT30=1787283240; SRT5=1787285946; page_uid=joQf2dqosussshGoCH0-394107; PLACE_LANGUAGE=ko; NID_SES=AAAB1yYI+O0I4B18F6eiZ2zeFz6Vh/xVbhdhI5cGDiziHS0FkYMq9OQilOuCcX1Hx5Nt+xvw01ce6amLFqNdnxyayfRw6qGmsJklz7xQH8SfgGcLWtjN4Tfvq9hZbhXsUyfm2iovbO0kdmF4h3TLCfR9oTX0xLvdACIrDxVWaLmJDMMpQjtdb7N/NxVL4jQQTdbaECMwWqcE25BG2+ZUacbVxSaFVlMh13Zq+7e0eY5PHT+LBJYRFompwGMt5S2vKY3Rgv17tAJDv0giqumoCMhqZCjTQ4gIrA6sPUf+cWf746Dl9ZCMv4miIABTjdP1b3iPdgJDrmH2ZkkGhQ0KhLCFZsHre0juFUGpYdhQugcbXKdHrbrQ8pC0OlQA0xxdPUiireNBnqiapWZmeZEYbXoqGSUHHXYZV7/4Ap30i2uNRmRxovai6yUlPI9s4X/9uN+FPi/XN7gLPog1/Ec4fhDX/aAAlAQjn8N0Qx0AyIjnhVYY6iWmVmo3CDVBvt9z8aT6jDkXGCpiWi4HPg14fldxzOdzFPuZB5JqpU1RWc9cwPzeqV5yfD/c42C1Gk1zxUv7jRIyHjcOJg7hgz0gDLq8HmUBaJ4X29UAwHsaQn0sHex1ldfi3rRSbmVwbRyXeJVG7A==; MM_PF=SEARCH; BUC=qLVcfRYKCWuoAQzSw-jftVi4BQQ3kOkD_ynxsx4N59A="
 DEFAULT_NCAPTCHA_TOKEN = "zq4HnOHinjKeTqYEwAjeiUbJ0dmlI0StXJafis__rj4="
@@ -130,7 +130,7 @@ def format_price(price):
     except:
         return str(price)
 
-def check_availability(checkin_date, checkout_date, cookie, token, guest=2, max_retries=2):
+def check_availability(checkin_date, checkout_date, guest=2):
     category_quoted = quote('pension')
     referer_url = f"https://pcmap.place.naver.com/accommodation/{PLACE_ID}/room?fromPanelNum=1&additionalHeight=76&timestamp=202608211341&locale=ko&svcName=map_pcv5&entry=bmp&level=top&businessCategory={category_quoted}&guest={guest}&checkin={checkin_date}&checkout={checkout_date}&filterType=%EC%97%85%EC%B2%B4&from=map"
     
@@ -140,7 +140,7 @@ def check_availability(checkin_date, checkout_date, cookie, token, guest=2, max_
         "accept-language": "ko",
         "cache-control": "no-cache",
         "content-type": "application/json",
-        "cookie": cookie,
+        "cookie": DEFAULT_COOKIE,
         "origin": "https://pcmap.place.naver.com",
         "pragma": "no-cache",
         "referer": referer_url,
@@ -152,7 +152,7 @@ def check_availability(checkin_date, checkout_date, cookie, token, guest=2, max_
         "sec-fetch-site": "same-site",
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
         "x-wtm-graphql": "eyJhcmciOiI0Mzc5NTM2ODQ2IiwidHlwZSI6ImFjY29tbW9kYXRpb24iLCJzb3VyY2UiOiJwbGFjZSJ9",
-        "x-wtm-ncaptcha-token": token,
+        "x-wtm-ncaptcha-token": DEFAULT_NCAPTCHA_TOKEN,
     }
     
     variables = {
@@ -173,45 +173,28 @@ def check_availability(checkin_date, checkout_date, cookie, token, guest=2, max_
         "query": QUERY
     }]
     
-    for attempt in range(max_retries + 1):
-        try:
-            response = requests.post(
-                "https://pcmap-api.place.naver.com/graphql",
-                headers=headers,
-                json=payload,
-                timeout=10
-            )
-            
-            if response.status_code == 429:
-                if attempt < max_retries:
-                    time.sleep(2 + attempt * 2)
-                    continue
-                return None, f"HTTP 429 (재시도 후 실패)"
-            
-            if response.status_code != 200:
-                return None, f"HTTP {response.status_code}"
-            
+    try:
+        response = requests.post(
+            "https://pcmap-api.place.naver.com/graphql",
+            headers=headers,
+            json=payload,
+            timeout=5
+        )
+        if response.status_code == 200:
             data = response.json()
             if isinstance(data, list) and len(data) > 0:
                 response_data = data[0]
-                if "errors" in response_data:
-                    return None, f"GraphQL errors: {response_data['errors']}"
                 if "data" in response_data and "accommodationBookingDetails" in response_data["data"]:
                     return response_data["data"]["accommodationBookingDetails"], None
-            
-            return None, "응답 형식 오류"
-            
-        except Exception as e:
-            if attempt < max_retries:
-                time.sleep(1)
-                continue
-            return None, str(e)
+        return None, f"HTTP {response.status_code}"
+    except Exception as e:
+        return None, str(e)
 
 def send_ntfy_alert(ntfy_channel, available_dates):
     if not ntfy_channel or not available_dates:
         return
     
-    message = "🏨 예약 가능한 객실이 발견되었습니다!\n\n"
+    message = "🏕️ [한우산 별천지] 예약 가능한 객실이 발견되었습니다!\n\n"
     for date_info in available_dates:
         message += f"📅 {date_info['checkin']} ~ {date_info['checkout']}\n"
         message += f"🏠 {date_info['room_name']}\n"
@@ -224,18 +207,18 @@ def send_ntfy_alert(ntfy_channel, available_dates):
             f"https://ntfy.sh/{ntfy_channel}",
             data=message.encode('utf-8'),
             headers={
-                "Title": f"🏨 {len(available_dates)}개 날짜 예약 가능!",
+                "Title": f"🏕️ 한우산 별천지 {len(available_dates)}개 날짜 빈방!",
                 "Priority": "high",
-                "Tags": "hotel,reservation"
-            }
+                "Tags": "tent,camping"
+            },
+            timeout=3
         )
-    except Exception as e:
+    except Exception:
         pass
 
 # --- UI 레이아웃 ---
-st.title("🏨 네이버 숙소 빈방 실시간 모니터링")
+st.title("🏕️ 한우산 별천지 숙박 빈방 찾기")
 
-# 사이드바 설정
 with st.sidebar:
     st.header("⚙️ 모니터링 설정")
     
@@ -248,18 +231,14 @@ with st.sidebar:
     poll_interval = st.number_input("폴링 간격 (초)", min_value=10, value=30)
     
     ntfy_channel = st.text_input("ntfy 알림 채널명 (선택)", value="", help="https://ntfy.sh/채널명 형식에서 채널명 입력")
-    
-    with st.expander("🔑 쿠키 & 토큰 설정 (필요 시 수정)"):
-        cookie_val = st.text_area("Cookie", value=DEFAULT_COOKIE, height=100)
-        token_val = st.text_input("NCAPTCHA Token", value=DEFAULT_NCAPTCHA_TOKEN)
 
-# 메인 UI 상태 세션 초기화
 if "monitoring" not in st.session_state:
     st.session_state.monitoring = False
 if "found_dates" not in st.session_state:
     st.session_state.found_dates = {}
+if "notified_keys" not in st.session_state:
+    st.session_state.notified_keys = set()
 
-# 버튼 배치
 col1, col2 = st.columns([1, 1])
 with col1:
     if st.button("🚀 모니터링 시작", use_container_width=True, type="primary", disabled=st.session_state.monitoring):
@@ -268,6 +247,7 @@ with col1:
         else:
             st.session_state.monitoring = True
             st.session_state.found_dates = {}
+            st.session_state.notified_keys = set()
             st.rerun()
 
 with col2:
@@ -275,15 +255,10 @@ with col2:
         st.session_state.monitoring = False
         st.rerun()
 
-# 메인 모니터링 영역
-if st.session_state.monitoring:
-    st.info("🔄 실시간 매물 검색 중입니다. 이 페이지를 열어두세요.")
-    
-    status_box = st.empty()
-    progress_bar = st.progress(0)
-    results_area = st.container()
+status_box = st.empty()
+results_area = st.container()
 
-    # 날짜 범위 리스트 생성
+if st.session_state.monitoring:
     date_list = []
     curr = start_date
     while curr <= end_date:
@@ -296,11 +271,9 @@ if st.session_state.monitoring:
         curr += timedelta(days=1)
 
     attempt = 0
-    total_dates = len(date_list)
 
     while st.session_state.monitoring:
         attempt += 1
-        newly_found = []
         
         pending = [
             d for d in date_list 
@@ -308,26 +281,25 @@ if st.session_state.monitoring:
         ]
         
         if not pending:
-            status_box.success("🎉 검색 대상 모든 날짜에서 빈방을 발견하여 모니터링을 종료합니다!")
+            status_box.success("🎉 모든 날짜에서 빈방 조회가 완료되었습니다!")
             st.session_state.monitoring = False
             break
 
-        status_box.text(f"[{datetime.now().strftime('%H:%M:%S')}] {attempt}회차 검사 중... (잔여: {len(pending)}개 날짜)")
+        status_box.info(f"[{datetime.now().strftime('%H:%M:%S')}] {attempt}회차 고속 조회의 결과를 불러오는 중... ({len(pending)}개 날짜)")
         
-        # 멀티스레드 비동기 요청
+        newly_found_this_batch = []
+        
+        # CLI와 동일하게 4개 스레드 유지 (429 차단 방지 및 안정성 고속 처리)
         with ThreadPoolExecutor(max_workers=4) as executor:
             future_to_date = {
                 executor.submit(
                     check_availability, 
                     d['checkin'], 
                     d['checkout'], 
-                    cookie_val, 
-                    token_val, 
                     guests
                 ): d for d in pending
             }
             
-            completed = 0
             for future in as_completed(future_to_date):
                 date_info = future_to_date[future]
                 checkin, checkout = date_info['checkin'], date_info['checkout']
@@ -344,39 +316,35 @@ if st.session_state.monitoring:
                         date_info['url'] = room.get('resrvUrl', '#')
                         
                         st.session_state.found_dates[date_key] = date_info
-                        newly_found.append(date_info)
-                
-                completed += 1
-                progress_bar.progress(completed / len(pending))
+                        
+                        if date_key not in st.session_state.notified_keys:
+                            newly_found_this_batch.append(date_info)
+                            st.session_state.notified_keys.add(date_key)
 
-        # 신규 발견 처리
-        if newly_found:
-            st.toast(f"🎉 {len(newly_found)}개 날짜에서 빈방 발견!", icon="✅")
+        if newly_found_this_batch:
+            st.toast(f"🎉 {len(newly_found_this_batch)}개 날짜 빈방 발견!", icon="✅")
             if ntfy_channel:
-                send_ntfy_alert(ntfy_channel, newly_found)
+                send_ntfy_alert(ntfy_channel, newly_found_this_batch)
 
-        # 현재까지 찾은 결과 실시간 표시
+        # 카드가 실시간으로 그려짐
         with results_area:
             st.subheader(f"✨ 찾은 빈방 ({len(st.session_state.found_dates)}개)")
             cols = st.columns(3)
             for idx, (k, info) in enumerate(st.session_state.found_dates.items()):
                 with cols[idx % 3]:
-                    with st.card if hasattr(st, 'card') else st.container(border=True):
+                    with st.container(border=True):
                         st.markdown(f"### 📅 {info['checkin']} ~ {info['checkout']}")
                         st.markdown(f"**🏠 객실:** {info['room_name']}")
                         st.markdown(f"**💰 가격:** {info['min_price']} ~ {info['max_price']}원")
                         st.link_button("👉 바로 예약하러 가기", info['url'], use_container_width=True)
 
-        # 다음 폴링까지 대기 (UI 업데이트 유지)
-        for i in range(poll_interval, 0, -1):
-            if not st.session_state.monitoring:
-                break
-            status_box.text(f"⏳ 다음 검색까지 대기 중... ({i}초)")
-            time.sleep(1)
+        status_box.text(f"⏳ {poll_interval}초 후 다음 검사를 진행합니다...")
+        
+        # 1초 단위 세기(딜레이)를 제거하고 한 번에 통째로 보냄 (속도 대폭 향상)
+        time.sleep(poll_interval)
 
-# 모니터링 비활성 상태일 때 기존 발견 결과 유지 표시
 elif st.session_state.found_dates:
-    st.subheader(f"✨ 최근 모니터링 결과 ({len(st.session_state.found_dates)}개)")
+    st.subheader(f"✨ 찾은 빈방 ({len(st.session_state.found_dates)}개)")
     cols = st.columns(3)
     for idx, (k, info) in enumerate(st.session_state.found_dates.items()):
         with cols[idx % 3]:
