@@ -216,6 +216,19 @@ def send_ntfy_alert(ntfy_channel, available_dates):
     except Exception:
         pass
 
+def render_results(container, found_dates):
+    with container:
+        st.subheader(f"✨ 찾은 빈방 ({len(found_dates)}개)")
+        if found_dates:
+            cols = st.columns(3)
+            for idx, (k, info) in enumerate(found_dates.items()):
+                with cols[idx % 3]:
+                    with st.container(border=True):
+                        st.markdown(f"### 📅 {info['checkin']} ~ {info['checkout']}")
+                        st.markdown(f"**🏠 객실:** {info['room_name']}")
+                        st.markdown(f"**💰 가격:** {info['min_price']} ~ {info['max_price']}원")
+                        st.link_button("👉 바로 예약하러 가기", info['url'], use_container_width=True)
+
 # --- UI 레이아웃 ---
 st.title("🏕️ 한우산 별천지 숙박 빈방 찾기")
 
@@ -256,7 +269,7 @@ with col2:
         st.rerun()
 
 status_box = st.empty()
-results_area = st.container()
+results_box = st.empty()
 
 if st.session_state.monitoring:
     date_list = []
@@ -289,7 +302,6 @@ if st.session_state.monitoring:
         
         newly_found_this_batch = []
         
-        # CLI와 동일하게 4개 스레드 유지 (429 차단 방지 및 안정성 고속 처리)
         with ThreadPoolExecutor(max_workers=4) as executor:
             future_to_date = {
                 executor.submit(
@@ -326,30 +338,14 @@ if st.session_state.monitoring:
             if ntfy_channel:
                 send_ntfy_alert(ntfy_channel, newly_found_this_batch)
 
-        # 카드가 실시간으로 그려짐
-        with results_area:
-            st.subheader(f"✨ 찾은 빈방 ({len(st.session_state.found_dates)}개)")
-            cols = st.columns(3)
-            for idx, (k, info) in enumerate(st.session_state.found_dates.items()):
-                with cols[idx % 3]:
-                    with st.container(border=True):
-                        st.markdown(f"### 📅 {info['checkin']} ~ {info['checkout']}")
-                        st.markdown(f"**🏠 객실:** {info['room_name']}")
-                        st.markdown(f"**💰 가격:** {info['min_price']} ~ {info['max_price']}원")
-                        st.link_button("👉 바로 예약하러 가기", info['url'], use_container_width=True)
+        # 단 하나의 플레이스홀더 영역만 갱신
+        results_box.empty()
+        with results_box.container():
+            render_results(st, st.session_state.found_dates)
 
         status_box.text(f"⏳ {poll_interval}초 후 다음 검사를 진행합니다...")
-        
-        # 1초 단위 세기(딜레이)를 제거하고 한 번에 통째로 보냄 (속도 대폭 향상)
         time.sleep(poll_interval)
 
-elif st.session_state.found_dates:
-    st.subheader(f"✨ 찾은 빈방 ({len(st.session_state.found_dates)}개)")
-    cols = st.columns(3)
-    for idx, (k, info) in enumerate(st.session_state.found_dates.items()):
-        with cols[idx % 3]:
-            with st.container(border=True):
-                st.markdown(f"### 📅 {info['checkin']} ~ {info['checkout']}")
-                st.markdown(f"**🏠 객실:** {info['room_name']}")
-                st.markdown(f"**💰 가격:** {info['min_price']} ~ {info['max_price']}원")
-                st.link_button("👉 바로 예약하러 가기", info['url'], use_container_width=True)
+else:
+    with results_box.container():
+        render_results(st, st.session_state.found_dates)
